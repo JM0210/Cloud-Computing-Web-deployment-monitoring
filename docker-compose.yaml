@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  # Flask Application Service
+  flask-app:
+    build: ./Web         # Tells Docker to look for the Dockerfile in the Web folder
+    ports:
+      - "5000:5000"      # Maps [Your Computer Port] : [Container Internal Port]
+    environment:
+      - MONGO_HOST=mongodb
+      - MONGO_PORT=27017
+      - HOST=0.0.0.0     # Allows external access to the container
+    depends_on:
+      - mongodb          # Ensures the database starts before the app
+
+  # MongoDB Database Service
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db # Persistence: Your task data stays safe on your hard drive
+
+volumes:
+  mongo-data:            # Defines the persistent volume
