@@ -27,4 +27,6 @@ A professional, containerized To-Do application built with **Flask** and **Mongo
 │   ├── flask-stack.yaml    # Flask Deployment, Service (LoadBalancer) & Probes
 │   ├── mongo-stack.yaml    # MongoDB Deployment & ClusterIP Service
 │   └── alert-values.yaml   # Prometheus Alertmanager Slack configuration
+└── docker-compose.yaml
 └── README.md
+
