@@ -3,36 +3,55 @@ kind: Deployment
 metadata:
   name: flask-app
 spec:
-  replicas: 1
+  replicas: 3 #  Change from 1 to 3 as required for part 5
   selector:
     matchLabels:
       app: flask-app
+  strategy: # Configure strategy for part 6
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1 # Specifies the maximum number of pods that can be created during an update.
+      maxUnavailable: 1 # Specifies the maximum number of pods that can be unavailable during the update process to ensure service continuity.
   template:
     metadata:
       labels:
         app: flask-app
     spec:
       containers:
-      - name: flask-app
-        image: jamiemai/flask-todo-app:v1  # Docker hub image name
-        ports:
-        - containerPort: 5000
-        env:
-        - name: MONGO_HOST
-          value: "mongodb"                 # the same in mongo.yaml Service 
-        - name: HOST
-          value: "0.0.0.0"                 #  the same in app.py 
+        - name: flask-app
+          image: jamiemai/flask-todo-app:v2 # Docker hub image name ## in part 6, update to v2
+          ports:
+            - containerPort: 5000
+          env:
+            - name: MONGO_HOST
+              value: "mongodb" # the same in mongo.yaml Service
+            - name: HOST
+              value: "0.0.0.0" #  the same in app.py
+          # --- Part 7: Health Monitoring ---
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            initialDelaySeconds: 15 # Wait 15s after startup before the first probe to allow Flask to initialize
+            periodSeconds: 20 # Perform the liveness check every 20s to ensure the container is still alive
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            initialDelaySeconds: 10 # Wait 10s after startup before checking if the pod is ready for traffic
+            periodSeconds: 10 # Perform the readiness check every 10s to manage traffic routing
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: flask-service
 spec:
-  type: NodePort                           # Access outside the container
+  # type: NodePort                           # Access outside the container（local)
+  type: LoadBalancer #  Change to LoadBalancer to assign a public DNS name (External-IP) via AWS ELB.
   selector:
     app: flask-app
   ports:
     - protocol: TCP
       port: 5000
       targetPort: 5000
-      nodePort: 30001                     
+      # nodePort: 30001

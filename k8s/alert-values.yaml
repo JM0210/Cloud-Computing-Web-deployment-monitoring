@@ -1,0 +1,16 @@
+alertmanager:
+  enabled: true
+  config:
+    global:
+      resolve_timeout: 5m
+      slack_api_url: "https://hooks.slack.com/services/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"
+    route:
+      group_by: ["alertname"]
+      receiver: "slack"
+    receivers:
+      - name: "slack"
+        slack_configs:
+          - channel: "#k8s"
+            send_resolved: true
+            title: "🔥 Kubernetes Alert: {{ .GroupLabels.alertname }}"
+            text: "🚨 *Alert Details* 🚨\n*Status:* Firing\n*Pod:* {{ .CommonLabels.pod }}\n*Issue:* CrashLoopBackOff detected!"
