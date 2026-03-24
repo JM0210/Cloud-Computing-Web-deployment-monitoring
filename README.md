@@ -16,18 +16,6 @@ Cloud Networking: Accessible via AWS Elastic Load Balancer (ELB).
 
 Observability: Real-time monitoring with Prometheus and automated Slack alerting.
 
-📂 Project Structure
-Bash
-.
-├── Web/
-│   ├── app.py              # Flask Application (V2)
-│   ├── Dockerfile          # Multi-stage build for Flask
-│   └── requirements.txt
-├── k8s/
-│   ├── flask-stack.yaml    # Deployment & Service (LoadBalancer)
-│   ├── mongo-stack.yaml    # MongoDB Deployment & Service
-│   └── alert-values.yaml   # Prometheus Alertmanager configuration
-└── README.md
 🛠️ Kubernetes Deployment Steps
 1. Deploy the Application Stack
 Apply the configurations to your cluster:
